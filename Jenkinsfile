@@ -37,6 +37,32 @@ pipeline {
             }
         }
 
+
+        stage('Approve PROD Deployment') {
+            steps {
+                input message: 'TEST deployment passed. Approve PROD deployment?',
+                      ok: 'Approve PROD'
+            }
+        }
+
+        stage('Deploy to PROD') {
+            steps {
+                bat '''
+                    @echo off
+                    echo Starting PROD deployment...
+
+                    if not exist deployment\\prod mkdir deployment\\prod
+
+                    copy /Y app.txt deployment\\prod\\app.txt
+
+                    if errorlevel 1 exit /b 1
+
+                    echo PROD deployment completed successfully
+                '''
+            }
+        }
+
+
         stage('Validate Config') {
             steps {
                 bat '''
