@@ -36,6 +36,7 @@ pipeline {
                     findstr /C:"application code from git" test.txt
 
                     if errorlevel 1 (
+
                         echo ERROR: test.txt validation failed
                         exit /b 1
                     )
@@ -45,7 +46,26 @@ pipeline {
             }
         }
 
-        stage('Validate Config') {
+        stage('Validate Config') 
+
+{
+        stage('Deploy to TEST') {
+            steps {
+                bat '''
+                    @echo off
+                    echo Starting TEST deployment...
+
+                    if not exist deployment\\test mkdir deployment\\test
+
+                    copy /Y app.txt deployment\\test\\app.txt
+
+                    if errorlevel 1 exit /b 1
+
+                    echo TEST deployment completed successfully
+                '''
+            }
+        }
+
             steps {
                 bat '''
                     @echo off
